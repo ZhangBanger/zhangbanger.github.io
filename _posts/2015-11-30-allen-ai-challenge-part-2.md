@@ -6,11 +6,11 @@ comments: true
 categories:
 ---
 
-### tl;dr
+## tl;dr
 
 I just [submitted on Kaggle](https://www.kaggle.com/c/the-allen-ai-science-challenge/leaderboard#team-237126) and got **0.30625**. I haven't had a chance to test out the variance of this approach, but I'm betting it's pretty huge.
 
-### Evaluation Script
+## Evaluation Script
 
 To set up the evaluation script, we need to load the model that we trained in Part 1:
 
@@ -37,25 +37,25 @@ for line in training_data:
   total += 1
 ```
 
-### Bag of Words Similarity
+## Bag of Words Similarity
 
 As an absolute baseline using the worst possible method I can think of, we should be able to get results that approximate random guessing (~25% accuracy). This version on github basically ignores the LSA projection, calculates cosine distance based on the original Bag of Words representation with some TF-IDF weighting applied.
 
-#### The Bag of Words (BoW) representation
+### The Bag of Words (BoW) representation
 A document "dog run dog dog" in the BoW representation would look like `[(1342, 3), (65, 1)]`, denoting that the "dog," the 1342<sup>nd</sup> word in the dictionary, occurs 3 times, and "run," the 65<sup>th</sup> word in the dictionary, occurs once. This is a sparse vector, and could also be a Python `dict` or `Map` in any other language.
 
 After extracting some fields, we produce a bag of words representation of the question and 4 answers:
 
 ```python
-  doc_vectors = [model.id2word.doc2bow(element.split()) for element in elements]
-  question = doc_vectors.pop(0)
+doc_vectors = [model.id2word.doc2bow(element.split()) for element in elements]
+question = doc_vectors.pop(0)
 ```
 
 And choose the answer with the highest cosine similarity to the question:
 
 ```python
-  similarities = [(gensim.matutils.cossim(question, answer), chr(idx + 65)) for idx, answer in enumerate(doc_vectors)]
-  chosen_answer = max(similarities)[1]
+similarities = [(gensim.matutils.cossim(question, answer), chr(idx + 65)) for idx, answer in enumerate(doc_vectors)]
+chosen_answer = max(similarities)[1]
 ```
 
 I used a little character-ordinal trick to go between alphabetic characters and numeric indexes for the answer. As an aside, I do a lot of mutable crap in here that's generally very bad practice, but it keeps things terse and legible.
@@ -72,7 +72,7 @@ Here are the baseline results:
 
 The [code](https://github.com/ZhangBanger/allen-ai-challenge/tree/v2) tagged with this version on GitHub.
 
-### LSA Similarity
+## LSA Similarity
 
 Switching to LSA-projected similarity is super easy:
 
@@ -93,7 +93,7 @@ Here are the results:
 
 The [code](https://github.com/ZhangBanger/allen-ai-challenge/tree/v3) tagged with this version on GitHub.
 
-### Thoughts & Intuition
+## Thoughts & Intuition
 You can see that the ultra-naive approach got 24% right, which is within \\(\epsilon\\) of 25%, the expected percentage we'd get through random guessing. Why is it that the LSA representation was slightly better, but not by a ton? The LSA representation rearranges the space such that words that co-occur in articles are closer in that latent space. Another way of saying this is that LSA incorporates the "distributional semantics" of words, but only very roughly.
 
 To think about the equivalent of taking an 8<sup>th</sup> grade science test using this strategy as a human, you could characterize the naive BoW and LSA approaches as follows:
@@ -104,7 +104,7 @@ To think about the equivalent of taking an 8<sup>th</sup> grade science test usi
 
 The LSA approach is actually not an unreasonable one, but we know there's a lot of structural information missing. There's no concept of word closeness within a document and we've entirely thrown away the idea that words in a sequence follow some pattern and imply some meaning.
 
-#### Closer Look at Errors
+### Closer Look at Errors
 
 Due to the contest rules, I can't post any specific examples on here. However, I can make a few anecdotal observations. I randomly sampled 1% of the errors and printed out the
 (1) question;
@@ -131,6 +131,6 @@ Case 2: the correct answer had low similarity, but it tended to contain terms mo
 
 Case 3: the most degenerate; similarity was 0 in many answer choices due to stopword being filtered from the model's dictionary. Some words are also missing from the dictionary, and numeric tokens are filtered out as well. This is where some traditional NLP preprocessing backfires. Filtering out stopwords and either "anonymizing" or ignoring numbers leads to ocassional loss of relevant information. The dictionary-size parameter might also need some tuning, with the caveat that more tolerant vocabulary rules might introduce more noise.
 
-### Next Steps
+## Next Steps
 
 To improve upon distributional semantics (check out [Ilya Sutskever](https://archive.org/details/Redwood_Center_2014_02_12_Ilya_Sutskever) explaining that term in a great talk), we can learn a better representation using `word2vec`. For a preview; `word2vec` also gives you a contextual representation of a word, but it focuses on neighboring words as context rather than the document space. A word can also be its own neighbor! `word2vec` doesn't explicitly cases 2 and 3, but it might be useful in applying a more fine-grained sense of context. There's also a method for minor preprocessing for word2vec where digits are converted to space-delimited, spelled-out numbers; definitely worth a try. Stay tuned.

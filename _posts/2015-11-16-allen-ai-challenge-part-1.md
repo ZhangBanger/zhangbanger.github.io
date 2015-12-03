@@ -6,19 +6,19 @@ comments: true
 categories:
 ---
 
-### Background
+## Background
 
 Thanks in part to some amazing encouragement from friends, family, and mentors, I've decided to blog about tackling a Kaggle contest to demonstrate my data science chops to the world in a shareable, public way.
 
 I chose the [Allen AI Challenge](https://www.kaggle.com/c/the-allen-ai-science-challenge) because it intersects nicely with things I've worked on around NLP and knowledge bases, but also crosses into new, interesting territory.
 
-### Problem Statement
+## Problem Statement
 
 The question, posed somewhat pejoratively: Is your model smarter than an 8th grader?
 
 The task for the machine is to identify the correct answer out of 4 candidate answers given a question. It is essentially the multiple-choice exams that many of us had back in 8th grade. The domain is limited to 8th grade science.
 
-### Initial Impressions
+## Initial Impressions
 
 I first checked out the forums to see what everyone were discussing, which might help direct my search later on. The topics ranged from "work with me plz" to "deep learning didn't work" to "where do I get data?" to "building a knowledge base & search." I naturally climbed down the rabbit hole of some of these discussions, effectively doing a literature review on Q-A (Question-Answer) systems and some recent work. Most in deep learning, most revolve around recurrent neural networks and memory networks. Some interesting paraphrases acquired through forums/reading:
 
@@ -27,13 +27,13 @@ I first checked out the forums to see what everyone were discussing, which might
 
 Armed with prior analysis of others, I checked out the data and confirmed the above. While the contest rules prohibit me from sharing the data, I can summarize; the questions require research and critical thinking for an adult human. The training set is merely an example / sanity test for building the model rather than a supervised training set. This is obvious after you look at it, since the choice of A, B, C, or D isn't really a class in terms of classification.
 
-### Rationale for Approach
+## Rationale for Approach
 
 Being biased towards automation and ML, approaches that involve more feature and data engineering seemed less interesting. Up front, I decided against hunting down and slamming hundreds of textbooks into an ElasticSearch cluster. I think the current champion of the leaderboard took that approach.
 
 Instead, I sought to apply a naive hypothesis to an accessible, simple dataset for initial insight. I plan to map the bag-of-words query to a latent space and my answers to the same space, and choose the bag-of-words answer most similar to the query, by some measure such as cosine similarity. I'd generate the mapping to the latent space through a publicly available data source like wikipedia, as required by the rules. While almost certain this model will perform at the level of random guessing, I'm planning to alternate iterating on the model and data source.
 
-### First Run
+## First Run
 
 Given the goal of minimizing data engineering, a preference for using existing tools, and comfort with any language/paradigm, I chose to use gensim, as it had a very complete suite of prebuilt tools , [Latent Semantic Analysis](https://en.m.wikipedia.org/wiki/Latent_semantic_analysis). LSA embodies what I descibed above, and while the model is training, I can go into more detail.
 
@@ -74,7 +74,7 @@ lsi = gensim.models.lsimodel.LsiModel(corpus=mm, id2word=id2word, num_topics=num
 
 I'm running this while writing this article, and since it takes forever on my laptop, I'll explain Latent Semantic Analysis.
 
-### Latent Semantic Analysis
+## Latent Semantic Analysis
 
 Latent Semantic Analysis enables you to map a high-dimensional, bag-of-words representation of the counts of every word in your vocabulary across every document (wiki article) to a lower dimension representation. Your original representation is sparse because most words don't appear in most wikipedia articles, and your resulting representation is dense because every component, or latent factor, in your low dimension representation is a linear combination of words.
 
@@ -102,7 +102,7 @@ $$
 
 The final term-document matrix $$X$$ is a matrix where element $$(i,j)$$ is the $$TFxIDF$$ weighted occurrence of term $$i$$ in document $$j$$.
 
-#### Singular Value Decomposition
+### Singular Value Decomposition
 
 In order to represent this matrix in a useful latent space, we need construct linear map(s) that represent the data in a dense form. LSA uses [Singular Value Decomposition (SVD)](https://en.wikipedia.org/wiki/Singular_value_decomposition), a method which factorizes the matrix $$X$$into 3 matrices with certain properties:
 
@@ -189,7 +189,7 @@ Here's a snippet of logs:
 ```
 So far, looks sane....
 
-### GitHub & Next
+## GitHub & Next
 Stay tuned for another post on results.
 
 [GitHub repo](https://github.com/ZhangBanger/allen-ai-challenge/tree/v1) with code tagged with every blog post (in this case, `v1`)
