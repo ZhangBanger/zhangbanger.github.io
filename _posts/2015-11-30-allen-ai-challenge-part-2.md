@@ -42,7 +42,7 @@ for line in training_data:
 As an absolute baseline using the worst possible method I can think of, we should be able to get results that approximate random guessing (~25% accuracy). This version on github basically ignores the LSA projection, calculates cosine distance based on the original Bag of Words representation with some TF-IDF weighting applied.
 
 ### The Bag of Words (BoW) representation
-A document `"dog run dog dog"` in the BoW representation would look like `[(1342, 3), (65, 1)]`, denoting that the "dog," the 1342^nd word in the dictionary, occurs 3 times, and "run," the 65^th word in the dictionary, occurs once. This is a sparse vector, and could also be a Python `dict` or `Map` in any other language.
+A document `"dog run dog dog"` in the BoW representation would look like `[(1342, 3), (65, 1)]`, denoting that the "dog," the $1342^{nd}$ word in the dictionary, occurs 3 times, and "run," the $65^{th}$ word in the dictionary, occurs once. This is a sparse vector, and could also be a Python `dict` or `Map` in any other language.
 
 After extracting some fields, we produce a bag of words representation of the question and 4 answers:
 
@@ -96,7 +96,7 @@ The [code](https://github.com/ZhangBanger/allen-ai-challenge/tree/v3) tagged wit
 ## Thoughts & Intuition
 You can see that the ultra-naive approach got 24% right, which is within \\(\epsilon\\) of 25%, the expected percentage we'd get through random guessing. Why is it that the LSA representation was slightly better, but not by a ton? The LSA representation rearranges the space such that words that co-occur in articles are closer in that latent space. Another way of saying this is that LSA incorporates the "distributional semantics" of words, but only very roughly.
 
-To think about the equivalent of taking an 8^th grade science test using this strategy as a human, you could characterize the naive BoW and LSA approaches as follows:
+To think about the equivalent of taking an 8th grade science test using this strategy as a human, you could characterize the naive BoW and LSA approaches as follows:
 
 **Naive BoW:** pick the answer with the words that overlap the most with your set. You are screwed if there's no overlap - in vector space, every word is orthogonal, so you would have 0 cosine similarity
 

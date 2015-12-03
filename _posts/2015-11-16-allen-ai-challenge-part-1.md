@@ -14,16 +14,16 @@ I chose the [Allen AI Challenge](https://www.kaggle.com/c/the-allen-ai-science-c
 
 ## Problem Statement
 
-The question, posed somewhat pejoratively: Is your model smarter than an 8^th grader?
+The question, posed somewhat pejoratively: Is your model smarter than an 8th grader?
 
-The task for the machine is to identify the correct answer out of 4 candidate answers given a question. It is essentially the multiple-choice exams that many of us had back in 8^th grade. The domain is limited to 8^th grade science.
+The task for the machine is to identify the correct answer out of 4 candidate answers given a question. It is essentially the multiple-choice exams that many of us had back in 8th grade. The domain is limited to 8th grade science.
 
 ## Initial Impressions
 
 I first checked out the forums to see what everyone were discussing, which might help direct my search later on. The topics ranged from "work with me plz" to "deep learning didn't work" to "where do I get data?" to "building a knowledge base & search." I naturally climbed down the rabbit hole of some of these discussions, effectively doing a literature review on Q-A (Question-Answer) systems and some recent work. Most in deep learning, most revolve around recurrent neural networks and memory networks. Some interesting paraphrases acquired through forums/reading:
 
 * Developing complex feature engineering pipelines to preprocess these questions is hard and likely to cause you to overfit.
-* The training set inadequately covers the topic of 8^th grade science, and getting the right training data is hard. Furthermore, the question-answer pairs have to be in your training data in some form, but they aren't really found anywhere.
+* The training set inadequately covers the topic of 8th grade science, and getting the right training data is hard. Furthermore, the question-answer pairs have to be in your training data in some form, but they aren't really found anywhere.
 
 Armed with prior analysis of others, I checked out the data and confirmed the above. While the contest rules prohibit me from sharing the data, I can summarize; the questions require research and critical thinking for an adult human. The training set is merely an example / sanity test for building the model rather than a supervised training set. This is obvious after you look at it, since the choice of A, B, C, or D isn't really a class in terms of classification.
 
