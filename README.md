@@ -1,2 +1,2 @@
 # zhangbanger.github.io
-Better Than Random
+Andy Zhang's Blog
