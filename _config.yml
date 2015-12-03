@@ -7,7 +7,6 @@ url: "http://zhangbanger.github.io" # the base hostname & protocol for your site
 github_username:  zhangbanger
 
 # Build settings
-markdown: kramdown
-
-kramdown:
-  input: GFM
+markdown: redcarpet
+redcarpet:
+  extensions: ["no_intra_emphasis", "autolink", "tables", "with_toc_data", "superscript"]

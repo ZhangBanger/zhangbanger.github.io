@@ -23,7 +23,7 @@ model = gensim.models.LsiModel.load(input_model, mmap='r')
 training_data = open(input_training)
 ```
 
-The task is to predict the correct answer from 4 choices given a question. Since this isn't a traditional classifcation problem with a threshold, we don't really care about traditional measures like AUC or F1, and there is no "curve" to measure. Instead, we measure accuracy by \\(\frac{numCorrect}{numTotal}\\).
+The task is to predict the correct answer from 4 choices given a question. Since this isn't a traditional classifcation problem with a threshold, we don't really care about traditional measures like AUC or F1, and there is no "curve" to measure. Instead, we measure accuracy by $\frac{numCorrect}{numTotal}$.
 
 This is extremely simple:
 
@@ -42,7 +42,7 @@ for line in training_data:
 As an absolute baseline using the worst possible method I can think of, we should be able to get results that approximate random guessing (~25% accuracy). This version on github basically ignores the LSA projection, calculates cosine distance based on the original Bag of Words representation with some TF-IDF weighting applied.
 
 ### The Bag of Words (BoW) representation
-A document "dog run dog dog" in the BoW representation would look like `[(1342, 3), (65, 1)]`, denoting that the "dog," the 1342<sup>nd</sup> word in the dictionary, occurs 3 times, and "run," the 65<sup>th</sup> word in the dictionary, occurs once. This is a sparse vector, and could also be a Python `dict` or `Map` in any other language.
+A document `"dog run dog dog"` in the BoW representation would look like `[(1342, 3), (65, 1)]`, denoting that the "dog," the 1342^nd word in the dictionary, occurs 3 times, and "run," the 65^th word in the dictionary, occurs once. This is a sparse vector, and could also be a Python `dict` or `Map` in any other language.
 
 After extracting some fields, we produce a bag of words representation of the question and 4 answers:
 
@@ -80,7 +80,7 @@ Switching to LSA-projected similarity is super easy:
 similarities = [(gensim.matutils.cossim(model[question], model[answer]), chr(idx + 65)) for idx, answer in enumerate(doc_vectors)]
 ```
 
-The only thing changes are that `question` becomes `model[question]` and `answer` becomes `model[answer]`. This convenient `model[x]` syntax in LSA allows you to pass in a sparse Bow representation and get back a dense LSA representation. I'll spare you the printout, but given that we choose \\(k = 400\\) back in Part 1, you can imagine that we have a 400-component dense vector.
+The only thing changes are that `question` becomes `model[question]` and `answer` becomes `model[answer]`. This convenient `model[x]` syntax in LSA allows you to pass in a sparse Bow representation and get back a dense LSA representation. I'll spare you the printout, but given that we choose $k = 400$ back in Part 1, you can imagine that we have a 400-component dense vector.
 
 Here are the results:
 
@@ -96,7 +96,7 @@ The [code](https://github.com/ZhangBanger/allen-ai-challenge/tree/v3) tagged wit
 ## Thoughts & Intuition
 You can see that the ultra-naive approach got 24% right, which is within \\(\epsilon\\) of 25%, the expected percentage we'd get through random guessing. Why is it that the LSA representation was slightly better, but not by a ton? The LSA representation rearranges the space such that words that co-occur in articles are closer in that latent space. Another way of saying this is that LSA incorporates the "distributional semantics" of words, but only very roughly.
 
-To think about the equivalent of taking an 8<sup>th</sup> grade science test using this strategy as a human, you could characterize the naive BoW and LSA approaches as follows:
+To think about the equivalent of taking an 8^th grade science test using this strategy as a human, you could characterize the naive BoW and LSA approaches as follows:
 
 **Naive BoW:** pick the answer with the words that overlap the most with your set. You are screwed if there's no overlap - in vector space, every word is orthogonal, so you would have 0 cosine similarity
 
@@ -125,11 +125,11 @@ The [code](https://github.com/ZhangBanger/allen-ai-challenge/tree/v4) tagged wit
 
 Here are some broad, qualitative cases I spotted:
 
-Case 1: similarity in chosen vs correct was extremely close (0.0748 vs 0.0792) and even the answers were plausibly in the same documents. There's a question about examples of dog behavior, and the 2 examples sound very similar to me. It's only through reasoning through a supplemental concept that I arrived at the right answer.
+**Case 1:** similarity in chosen vs correct was extremely close (0.0748 vs 0.0792) and even the answers were plausibly in the same documents. There's a question about examples of dog behavior, and the 2 examples sound very similar to me. It's only through reasoning through a supplemental concept that I arrived at the right answer.
 
-Case 2: the correct answer had low similarity, but it tended to contain terms more ambiguous than the chosen answer. There's a question about structures in the heart, and out of the 1-word answers, this model chose the one most specific to hearts ("aorta") rather than a word that was used in other contexts ("valve").
+**Case 2:** the correct answer had low similarity, but it tended to contain terms more ambiguous than the chosen answer. There's a question about structures in the heart, and out of the 1-word answers, this model chose the one most specific to hearts ("aorta") rather than a word that was used in other contexts ("valve").
 
-Case 3: the most degenerate; similarity was 0 in many answer choices due to stopword being filtered from the model's dictionary. Some words are also missing from the dictionary, and numeric tokens are filtered out as well. This is where some traditional NLP preprocessing backfires. Filtering out stopwords and either "anonymizing" or ignoring numbers leads to ocassional loss of relevant information. The dictionary-size parameter might also need some tuning, with the caveat that more tolerant vocabulary rules might introduce more noise.
+**Case 3:** the most degenerate; similarity was 0 in many answer choices due to stopword being filtered from the model's dictionary. Some words are also missing from the dictionary, and numeric tokens are filtered out as well. This is where some traditional NLP preprocessing backfires. Filtering out stopwords and either "anonymizing" or ignoring numbers leads to ocassional loss of relevant information. The dictionary-size parameter might also need some tuning, with the caveat that more tolerant vocabulary rules might introduce more noise.
 
 ## Next Steps
 

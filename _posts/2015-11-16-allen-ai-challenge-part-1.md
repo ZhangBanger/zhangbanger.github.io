@@ -14,16 +14,16 @@ I chose the [Allen AI Challenge](https://www.kaggle.com/c/the-allen-ai-science-c
 
 ## Problem Statement
 
-The question, posed somewhat pejoratively: Is your model smarter than an 8th grader?
+The question, posed somewhat pejoratively: Is your model smarter than an 8^th grader?
 
-The task for the machine is to identify the correct answer out of 4 candidate answers given a question. It is essentially the multiple-choice exams that many of us had back in 8th grade. The domain is limited to 8th grade science.
+The task for the machine is to identify the correct answer out of 4 candidate answers given a question. It is essentially the multiple-choice exams that many of us had back in 8^th grade. The domain is limited to 8^th grade science.
 
 ## Initial Impressions
 
 I first checked out the forums to see what everyone were discussing, which might help direct my search later on. The topics ranged from "work with me plz" to "deep learning didn't work" to "where do I get data?" to "building a knowledge base & search." I naturally climbed down the rabbit hole of some of these discussions, effectively doing a literature review on Q-A (Question-Answer) systems and some recent work. Most in deep learning, most revolve around recurrent neural networks and memory networks. Some interesting paraphrases acquired through forums/reading:
 
 * Developing complex feature engineering pipelines to preprocess these questions is hard and likely to cause you to overfit.
-* The training set inadequately covers the topic of 8th grade science, and getting the right training data is hard. Furthermore, the question-answer pairs have to be in your training data in some form, but they aren't really found anywhere.
+* The training set inadequately covers the topic of 8^th grade science, and getting the right training data is hard. Furthermore, the question-answer pairs have to be in your training data in some form, but they aren't really found anywhere.
 
 Armed with prior analysis of others, I checked out the data and confirmed the above. While the contest rules prohibit me from sharing the data, I can summarize; the questions require research and critical thinking for an adult human. The training set is merely an example / sanity test for building the model rather than a supervised training set. This is obvious after you look at it, since the choice of A, B, C, or D isn't really a class in terms of classification.
 
@@ -85,7 +85,7 @@ More specifically, there exists some bases for representing the count of words a
 
 The wikipedia diagram shows it best:
 
-![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Singular-Value-Decomposition.svg/220px-Singular-Value-Decomposition.svg.png){: .center }
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Singular-Value-Decomposition.svg/220px-Singular-Value-Decomposition.svg.png)
 
 On the top right is the real data, and on the top left is the desired representation. The arrows show the imputed transformation that we want to recreate and invert.
 
@@ -94,39 +94,38 @@ Furthermore, the columns of the matrix are ordered such that the first column en
 **Term-Document Matrix**
 The term-document matrix contains the sparse representation of occurences of words in wikipedia articles. It is weighted using TF-IDF, based on the assumption that words that appear more frequently in a given article but less frequently overall are more significant to that article, whereas words that appear in all articles add little information. This assumption makes sense from an information theory standpoint, but there's been some study around why it doesn't work. Nonetheless, it's still an industry-standard practice.
 
-$$TFxIDF$$ is defined as the raw term frequency of a term in a given document times the log of the quotient of the total number of documents divided by the number of documents containing that term
+$TFxIDF$ is defined as the raw term frequency of a term in a given document times the log of the quotient of the total number of documents divided by the number of documents containing that term
 
-$$
-log \dfrac{totalNumDocs}{numDocsWithTerm}
-$$
+$$log \dfrac{totalNumDocs}{numDocsWithTerm}$$
 
-The final term-document matrix $$X$$ is a matrix where element $$(i,j)$$ is the $$TFxIDF$$ weighted occurrence of term $$i$$ in document $$j$$.
+The final term-document matrix $X$ is a matrix where element $(i,j)$ is the $TFxIDF$ weighted occurrence of term $i$ in document $j$.
 
 ### Singular Value Decomposition
 
-In order to represent this matrix in a useful latent space, we need construct linear map(s) that represent the data in a dense form. LSA uses [Singular Value Decomposition (SVD)](https://en.wikipedia.org/wiki/Singular_value_decomposition), a method which factorizes the matrix $$X$$into 3 matrices with certain properties:
+In order to represent this matrix in a useful latent space, we need construct linear map(s) that represent the data in a dense form. LSA uses [Singular Value Decomposition (SVD)](https://en.wikipedia.org/wiki/Singular_value_decomposition), a method which factorizes the matrix $X$into 3 matrices with certain properties:
 
 $$
 X = U\Sigma V
 $$
 
-* $$U$$ is a unitary matrix (orthogonal in real space) contains columns called left-singular vectors, which are the eigenvectors of $$XX^T$$
-* $$V$$ is a unitary matrix (orthogonal in real space) contains columns called right-singular vectors, which are the eigenvectors of $$X^TX$$
-* $$\Sigma$$ is a diagonal matrix where the diagonal elements are called singular values, which are the square roots of the eigenvalues of $$X^TX$$
-  * $$X^TX$$ is just the covariance matrix, and [it's provable that the eigenvalues are the variances](http://math.stackexchange.com/questions/1217862/why-the-principal-components-correspond-to-the-eigenvalues) (link talks about PCA, which uses SVD under the hood).
+
+* $U$ is a unitary matrix (orthogonal in real space) contains columns called left-singular vectors, which are the eigenvectors of $XX^T$
+* $V$ is a unitary matrix (orthogonal in real space) contains columns called right-singular vectors, which are the eigenvectors of $X^TX$
+* $\Sigma$ is a diagonal matrix where the diagonal elements are called singular values, which are the square roots of the eigenvalues of $X^TX$
+* $X^TX$ is just the covariance matrix, and [it's provable that the eigenvalues are the variances](http://math.stackexchange.com/questions/1217862/why-the-principal-components-correspond-to-the-eigenvalues) (link talks about PCA, which uses SVD under the hood).
 
 **Power Iteration**
-The eigenvalues/eigenvectors are learned using an algorithm called [Power Iteration](https://en.wikipedia.org/wiki/Power_iteration). Power Iteration produces the eigenvalue $$\lambda$$ and eigenvector $$v$$ such that $$Xw = \lambda w$$. It actually doesn't decompose a matrix directly, but is a neat trick that avoids computing the covariance matrix $$XX^T$$, and is based on certain assumptions that you can read upon.
-The tldr; you can converge on the largest eigenvalue by repeatedly multiplying your matrix $$X$$ by your vector $$w_k$$, normalizing and substituting the value of $$w_k$$ back in for the next iteration, in this recurrent relation:
+The eigenvalues/eigenvectors are learned using an algorithm called [Power Iteration](https://en.wikipedia.org/wiki/Power_iteration). Power Iteration produces the eigenvalue $\lambda$ and eigenvector $v$ such that $Xw = \lambda w$. It actually doesn't decompose a matrix directly, but is a neat trick that avoids computing the covariance matrix $XX^T$, and is based on certain assumptions that you can read upon.
+The tldr; you can converge on the largest eigenvalue by repeatedly multiplying your matrix $X$ by your vector $w_k$, normalizing and substituting the value of $w_k$ back in for the next iteration, in this recurrent relation:
 
 $$
 w_{k+1} = \dfrac{Xw_k}{||Xw_k||}
 $$
 
 **Elimination**
-The result of a run is an eigenvalue that represents the variance in this component and an eigenvector $$w_n$$, where each $$w_{(i)}$$ component is a weight representing the contribution of term $$i$$ in the term-document matrix $$X$$ to the component. The actual component can be interpretted the linear combination of the terms that inherits the maximum possible variance.
+The result of a run is an eigenvalue that represents the variance in this component and an eigenvector $w_n$, where each $w_{(i)}$ component is a weight representing the contribution of term $i$ in the term-document matrix $X$ to the component. The actual component can be interpretted the linear combination of the terms that inherits the maximum possible variance.
 
-To get $$k$$th eigenvalue/eigenvector, you can apply the first $$k - 1$$ transformations and replace the $$X$$ matrix above with the resulting $$\hat{X_k}$$.
+To get $k^{th}$ eigenvalue/eigenvector, you can apply the first $k - 1$ transformations and replace the $X$ matrix above with the resulting $\hat{X_k}$.
 
 $$
 \hat{X_k} = X - \sum\limits_{n=1}^{k-1} Xw_{(n)}w{(n)}^T
@@ -135,27 +134,27 @@ $$
 You can repeat this process from the 1st component all the way to the end.
 
 **Dimensionality Reduction**
-With our SVD in hand, we can choose a $$k$$ such that $$k$$ encodes the desired variance in the data in a smaller space. When we replace the middle matrix $$\Sigma$$ with $$\Sigma_k$$, where $$\Sigma_k$$ is $$\Sigma$$ with only the $$k$$ largest singular values (all others zeroed out), we end up with a lower-rank matrix $$X_k$$
+With our SVD in hand, we can choose a $k$ such that $k$ encodes the desired variance in the data in a smaller space. When we replace the middle matrix $\Sigma$ with $\Sigma_k$, where $\Sigma_k$ is $Sigma$ with only the $k$ largest singular values (all others zeroed out), we end up with a lower-rank matrix:
 $$
 X_k = U\Sigma_k V
 $$
 
 **"Inference"**
-Using the `id2word` term index, you can get the vector index $$i$$ of a word, and with a linear combination of those, weighted by TF-IDF, you can calculate a query  vector $$q$$ for a new sentence.
+Using the `id2word` term index, you can get the vector index $i$ of a word, and with a linear combination of those, weighted by TF-IDF, you can calculate a query  vector $q$ for a new sentence.
 
-To obtain a $$k$$-dimensional representation $$\hat{\textbf{q}}$$ of $$q$$, you would multiply the pseudoinverse of your lower rank $$\Sigma_k$$ with your singular vectors in $$U$$, and apply that transformation to $$q$$
+To obtain a $k$-dimensional representation $\hat{\textbf{q}}$ of $q$, you would multiply the pseudoinverse of your lower rank $\Sigma_k$ with your singular vectors in $U$, and apply that transformation to $q$
 
 $$
 \hat{\textbf{q}} = \Sigma_k^{-1} U_k^T q
 $$
 
-This is essentially an inversion of the transformation that is implied by SVD. I'm calling this 'inference' just 'cause.
+This is essentially an inversion of the transformation that is implied by SVD. I'm calling this "prediction" even though it really isn't.
 
 **Use in multiple choice**
 Given:
 
-* A latent representation of the query for the Question $$q$$
-* The latent representations of the 4 different answers $${a_i} : i \in \{a, b, c, d\}$$
+* A latent representation of the query for the Question $q$
+* The latent representations of the 4 different answers ${a_i} : i \in \{a, b, c, d\}$
 
 Compute a [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) for reach question-answer pair, defined as the dot product normalized by the product of the norms:
 
@@ -163,10 +162,10 @@ $$
 \cos(a, b) = \dfrac{q \cdot a_i}{||q||\times||a_i||}
 $$
 
-Choose the option with the highest similarity $$i = argmax(\cos(q, a_i))$$
+Choose the option with the highest similarity $i = argmax(\cos(q, a_i))$
 
 **Notes**
-Due to how gensim trains, you choose the $$k$$ parameter up front, as it is incorporated into the training. A quasi-online version of SVD is performed, incrementally building $$U\Sigma V$$ by adding small sets of documents and applying a few power iterations. Only a rank $$k$$ approximation is retained at every run. This technique allows it to avoid holding too much in memory at once, but it is painfully slow (6+ hours and counting on the entry-level 2015 MacBook Pro). There is some literate showing that only maintaining the low rank approximation is sufficient for this approach.
+Due to how gensim trains, you choose the $k$ parameter up front, as it is incorporated into the training. A quasi-online version of SVD is performed, incrementally building $U\Sigma V$ by adding small sets of documents and applying a few power iterations. Only a rank $k$ approximation is retained at every run. This technique allows it to avoid holding too much in memory at once, but it is painfully slow (6+ hours and counting on the entry-level 2015 MacBook Pro). There is some literate showing that only maintaining the low rank approximation is sufficient for this approach.
 
 Here's a snippet of logs:
 
