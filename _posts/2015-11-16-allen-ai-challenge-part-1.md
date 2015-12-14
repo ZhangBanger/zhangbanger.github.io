@@ -105,14 +105,14 @@ The final term-document matrix $X$ is a matrix where element $(i,j)$ is the $TFx
 In order to represent this matrix in a useful latent space, we need construct linear map(s) that represent the data in a dense form. LSA uses [Singular Value Decomposition (SVD)](https://en.wikipedia.org/wiki/Singular_value_decomposition), a method which factorizes the matrix $X$into 3 matrices with certain properties:
 
 $$
-X = U\Sigma V
+X = U\Sigma V^T
 $$
 
 
 * $U$ is a unitary matrix (orthogonal in real space) contains columns called left-singular vectors, which are the eigenvectors of $XX^T$
 * $V$ is a unitary matrix (orthogonal in real space) contains columns called right-singular vectors, which are the eigenvectors of $X^TX$
 * $\Sigma$ is a diagonal matrix where the diagonal elements are called singular values, which are the square roots of the eigenvalues of $X^TX$
-* $X^TX$ is just the covariance matrix, and [it's provable that the eigenvalues are the variances](http://math.stackexchange.com/questions/1217862/why-the-principal-components-correspond-to-the-eigenvalues) (link talks about PCA, which uses SVD under the hood).
+* $X^TX$ and $XX^T$ are covariance matrices, and [it's provable that the eigenvalues are the variances](http://math.stackexchange.com/questions/1217862/why-the-principal-components-correspond-to-the-eigenvalues) (link talks about PCA, which uses SVD under the hood). These represent term and document covariances.
 
 **Power Iteration**
 The eigenvalues/eigenvectors are learned using an algorithm called [Power Iteration](https://en.wikipedia.org/wiki/Power_iteration). Power Iteration produces the eigenvalue $\lambda$ and eigenvector $v$ such that $Xw = \lambda w$. It actually doesn't decompose a matrix directly, but is a neat trick that avoids computing the covariance matrix $XX^T$, and is based on certain assumptions that you can read upon.
@@ -136,7 +136,7 @@ You can repeat this process from the 1st component all the way to the end.
 **Dimensionality Reduction**
 With our SVD in hand, we can choose a $k$ such that $k$ encodes the desired variance in the data in a smaller space. When we replace the middle matrix $\Sigma$ with $\Sigma_k$, where $\Sigma_k$ is $Sigma$ with only the $k$ largest singular values (all others zeroed out), we end up with a lower-rank matrix:
 $$
-X_k = U\Sigma_k V
+X_k = U\Sigma_k V^T
 $$
 
 **"Inference"**
