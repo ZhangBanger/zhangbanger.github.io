@@ -10,7 +10,7 @@ categories:
 
 I ran Word2Vec on the text-only set of wikipedia, with every article on its own line. Then, I used a similar evaluation system as I did for LSA in the [last post](http://zhangbanger.github.io/2015/11/30/allen-ai-challenge-part-2.html).
 
-I just and got **0.27750**, which was actually lower than LSA on the test set.
+I submitted and got **0.27750**, which was actually lower than LSA on the test set.
 
 ## Word2Vec Explained
 
