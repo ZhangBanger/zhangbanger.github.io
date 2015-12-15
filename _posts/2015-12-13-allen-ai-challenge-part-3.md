@@ -277,9 +277,9 @@ Here are results so far:
 
 ### Intuition & Final Thoughts
 
-Word2Vec doesn't dramatically outperform LSA. Some more hyperparameter tuning may help, but it isn't immediately obvious that this is a better distributional hypothesis than LSA.
+Word2Vec doesn't dramatically outperform LSA. Some more hyperparameter tuning may help, but it isn't immediately obvious that this is a better distributional hypothesis than LSA. In the next post, I will do a small, manual search over hyperparameters and even try a different prediction method.
 
-I'm still convinced that Wikipedia is a pretty good source, so the next level of improvement will come from taking steps beyond semantic inference. Instead of semantic similarity between question and answer, we'll look at Sequence-to-Sequence learning via Recurrent Neural Networks (RNNs). RNNs are trained on pairs of input-output sequences of variable length.
+I'm still convinced that Wikipedia is a pretty good source, so a further level of improvement will come from taking steps beyond semantic inference. Instead of semantic similarity between question and answer, we'll look at Sequence-to-Sequence learning via Recurrent Neural Networks (RNNs). RNNs are trained on pairs of input-output sequences of variable length.
 
 The intuition behind RNNs is that dependences in the structure of language can be modeled when the inputs and outputs are arranged in a sequence and the model is forced to learn weights that maximize the generation of the output sequence given the input sequence. Stay tuned.
 
