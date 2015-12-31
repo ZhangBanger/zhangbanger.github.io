@@ -8,7 +8,7 @@ categories:
 
 ## tl;dr
 
-Highway Networks employ more learnable weights for a similar network, but are easier to use than GradNets. Architectural interpolation for very deep nets seems to work better when machines do the work.
+Highway Networks and GradNets both allow interpolation of network architecture. GradNets rely on a heuristic for global interpolation, while Highway Networks employ learnable weights for neuron-specific gating. The latter turned out to be easier to train and optimize due to the flexibility and self-optimization.
 
 ## Intro
 
