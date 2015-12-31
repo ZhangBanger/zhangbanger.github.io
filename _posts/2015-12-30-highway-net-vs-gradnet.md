@@ -8,11 +8,11 @@ categories:
 
 ## tl;dr
 
-Highway Networks and GradNets both allow interpolation of network architecture. GradNets rely on a heuristic for global interpolation, while Highway Networks employ learnable weights for neuron-specific gating. The latter turned out to be easier to train and optimize due to the flexibility and self-optimization.
+Highway Networks and GradNets both allow interpolation of network architecture. GradNets rely on a heuristic for global interpolation, while Highway Networks employ learnable weights for neuron-specific gating. The latter turned out to be easier to train due to the flexibility and self-optimization.
 
 ## Intro
 
-As part of a deep learning study group, I implemented both Highway Networks and GradNets to compare results under similar conditions. The Highway Network implementation is based on Jim Fleming's [blog post](https://medium.com/jim-fleming/highway-networks-with-tensorflow-1e6dfa667daa#.7z1d6allb) with small  modifications, and the GradNet implementation is derivative of that. Both demos are in Jupyter Notebooks, run Tensorflow, and do not require GPUs to finish quickly. To keep formulations simple, I only compare fully-connected networks.
+As part of a deep learning study group, I implemented both Highway Networks and GradNets to compare results under similar conditions. The Highway Network implementation is based on Jim Fleming's [blog post](https://medium.com/jim-fleming/highway-networks-with-tensorflow-1e6dfa667daa#.7z1d6allb) with small  modifications and the GradNet implementation is derivative of that. Both demos are in Jupyter Notebooks, run Tensorflow, and do not require GPUs to finish quickly. To keep formulations simple, I only compare fully-connected networks.
 
 ## Highway Networks
 
@@ -28,7 +28,7 @@ $$
 y = H(x, W_H) = activation(W_H^Tx + b_H)
 $$
 
-To this:
+A Highway Layer looks like
 
 $$
 y = H(x, W_H) \cdot T(x, W_T) + x \cdot C(x, W_C)
@@ -36,7 +36,7 @@ $$
 
 $\cdot$ denotes elementwise multiplication. Note that all W matrices match in dimension.
 
-Since $T(x, W_T) = 1 - C(x, W_C)$, the last term in the equation above can becomes $1 - T(x, W_T)$
+Since $T(x, W_T) = 1 - C(x, W_C)$, the last term in the equation above becomes $1 - T(x, W_T)$, so we don't need $W_C$ anymore.
 
 $T(x, W_T) = sigmoid(W_H^Tx + b_T)$ produces element-wise "gates" between 0 and 1.
 
@@ -67,7 +67,7 @@ More about highway networks on this [page](http://people.idsia.ch/~rupesh/very_d
 
 [GradNets](http://arxiv.org/abs/1511.06827) offer a simplified alternative to gradual interpolation between model architectures. The inspiration is similar to that of Highway Networks; early in training, prefer simpler architecture, whereas later in training, transition to complex.
 
-The variable $g$ anneals over a $\tau$ epochs, controlling the amount of interpolation between the simple activation and the nonlinear one. Using similar notation as before:
+The variable $g$ anneals over a $\tau$ epochs (full passes through shuffled data), controlling the amount of interpolation between the simple activation and the nonlinear one. Using similar notation as before:
 
 $$
 g = \min(t / \tau, 1)
@@ -84,6 +84,8 @@ $$
 $$
 y = g \cdot H(x, W) + (1 - g) \cdot J(x, W)
 $$
+
+$t$ is the continuous or stepwise epoch number
 
 In code:
 
@@ -103,7 +105,7 @@ for i in range(num_iter):
 ...
 ```
 
-I used `__future__.division` to default to floating point division with a single `/`, whereas integer floor division would be `//`. The paper was not explicit on which one to use, but it made sense to be as gradual as possible in GradNets.
+I used `__future__.division` to default to floating point division with a single `/`, whereas integer floor division would be `//`. The former corresponds to a continuous $t$, and the latter a stepwise $t$. The paper was not explicit about which one to use, but it made sense to be as gradual as possible in GradNets.
 
 
 ## Experiment
@@ -183,6 +185,14 @@ cross_entropy = -tf.reduce_sum(y_ * tf.log(y + 1e-9))
 ```
 
 I ended up hitting 94% accuracy around epoch 15 and staying there until the end of training. I was pretty happy with the graphs for weights and gradients - they remained in a pretty small range throughout. It should be emphasized that the convergence property was sensitive to ALL of the hyperparameters above. Significant changes in any of them led to divergence or no learning.
+
+Here are some graphs of a run:
+
+![Training Accuracy](https://lh3.googleusercontent.com/yx6TJ-IduYF0OCScLU9pT0zbQOmKtwn7wqCJiBFOHL1p9i2SLhOtc1CqH2TUpmPZYJkgwWnRhgvNqw=w1515-h422-no)
+
+![Weight Norm](https://lh3.googleusercontent.com/8D90Lv9eIKuuzr_OMIOLAR7jsQYki16TOpBm03oyGkI3KwiydCkZczhe48QS5wKtBps0r_XH0giGOg=w1510-h414-no)
+
+![Gradient Norm](https://lh3.googleusercontent.com/baOtgb3xTS4fSp4r7l0ABw5JC3ePC91wdotvfy2OdlL73k8otEVPajE8RbGiVk8vS9HnX7RWUUMeMA=w1509-h415-no)
 
 ### Sanity Check
 
