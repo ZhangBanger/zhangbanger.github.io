@@ -147,11 +147,11 @@ def grelu_layer(x, input_size, output_size, g):
     return y
 ```
 
-Because of the multiplicative nature of backpropogation, I ended up with situations where I had exploding gradients and weights. I added a bit of monitoring and noted that the gradients tended to explode as `g` crossed $0.4 - 0.7$. 
+Because of the multiplicative nature of backpropogation, I ended up with situations where I had exploding gradients and weights. I added a bit of monitoring to keep track of the L1 norm of both.
 
 To understand how this happens, here's an example. Suppose `y_` is non-zero and `y` is very close to zero. `log(y)` is a very big negative number, and gets multiplied by a non-zero `- y_`. When gradients flow more freely as `g` increases, this large number is multipled and summed across many nodes in many layers.
 
-The value of gradient $dW$ at a given layer is $dx \times dy$. $dy$ is that big number that came from the next layer, and $dx$ is the activation from previous layer. This can lead to exponential growth in the gradient under the wrong conditions.
+The value of gradient $dW$ at a given layer is $dx \times dy$. $dy$ is that big number that came from the next layer, and $dx$ is the activation from previous layer. Repeating the process down all layers through backprop can lead to exponential growth under the wrong conditions.
 
 A good proxy for big activations is big weights, so I collected those as well. I noticed some weight explosion, so I applied the `relu6` activation, which clips the output of the unit. It prevented gradient explosion, but at saturation in hidden layers, the network quickly diverges without means to recover.
 
@@ -188,16 +188,14 @@ I ended up hitting 94% accuracy around epoch 15 and staying there until the end 
 
 For my own sanity check, I left the hyperparameters in their tuned state and removed the GradNet portion to see how well the network would do. As expected, the network failed to bounce out of its initial state.
 
-## Conclusion
+## Final Thoughts
 
-While Highway Networks effectively double the number of parameters per layer, they work surprisingly well with naive hyperparameters.
+While Highway Networks effectively double the number of parameters per layer, they converge quickly and stably with naive hyperparameters.
 
-In contrast, GradNets are highly sensitive to hyperparameters. Painstaking, manual search (which could have been automated through Grid- or Randomized-Search, but still require some knowledge and tweaking) and weight/gradient debugging were required to deliver usable results. Applying a heuristic, namely a $g$-weighting that annealed over a number of epochs, worked best when interpolating between "Highway Mode" (Identity) and ReLU. Interpolating the nonlinearity (Linear) didn't seem to help with a 50-layer network.
+In contrast, GradNets work best when interpolating between "Highway Mode" (Identity) and ReLU, with the caveat that one must tune hyperparameters very carefully (perhaps through systematic Grid/Randomized search). They certainly make training the net easier in comparison to no interpolation.
 
-The winning characteristic of Highway Networks is ability to learn good gating parameters for every neuron as part of end-to-end training. The Identity GReLU does a fair job of approximating this without the additional model parameters, but
-(1) it is only able to so with one $g$ across the entire network, and
-(2) only succeeds under very narrow conditions that must be discovered through hyperparameter search.
+The winning characteristic of Highway Networks is ability to learn good gating parameters for every neuron as part of end-to-end training, whereas GradNets must apply a single multiplier $g$ for the entire network.
 
-To the credit of GradNets, gradual interpolation of other aspects of the architecture, such as dropout, batch normalization, convolutions, are available and have no counterpart in Highway Networks. Further investigation into using Highway Networks for these components could be interesting.
+However, gradual interpolation of other aspects of the architecture, such as dropout, batch normalization, convolutions, are available and have been tested in GradNets, but have no counterpart in Highway Networks. Further investigation into using Highway Networks for these components could be interesting.
 
 Demo runs with inline implementation can be found [here](https://github.com/ZhangBanger/highway-vs-gradnet)
