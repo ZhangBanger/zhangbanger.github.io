@@ -188,11 +188,14 @@ I ended up hitting 94% accuracy around epoch 15 and staying there until the end 
 
 Here are some graphs of a run:
 
-![Training Accuracy](https://lh3.googleusercontent.com/yx6TJ-IduYF0OCScLU9pT0zbQOmKtwn7wqCJiBFOHL1p9i2SLhOtc1CqH2TUpmPZYJkgwWnRhgvNqw=w1515-h422-no)
+[![Training Accuracy][1]][1]
+[1]: https://lh3.googleusercontent.com/yx6TJ-IduYF0OCScLU9pT0zbQOmKtwn7wqCJiBFOHL1p9i2SLhOtc1CqH2TUpmPZYJkgwWnRhgvNqw=w1515-h422-no
 
-![Weight Norm](https://lh3.googleusercontent.com/8D90Lv9eIKuuzr_OMIOLAR7jsQYki16TOpBm03oyGkI3KwiydCkZczhe48QS5wKtBps0r_XH0giGOg=w1510-h414-no)
+[![Weight Norm][2]][2]
+[2]: https://lh3.googleusercontent.com/8D90Lv9eIKuuzr_OMIOLAR7jsQYki16TOpBm03oyGkI3KwiydCkZczhe48QS5wKtBps0r_XH0giGOg=w1510-h414-no
 
-![Gradient Norm](https://lh3.googleusercontent.com/baOtgb3xTS4fSp4r7l0ABw5JC3ePC91wdotvfy2OdlL73k8otEVPajE8RbGiVk8vS9HnX7RWUUMeMA=w1509-h415-no)
+[![Gradient Norm][3]][3]
+[3]: https://lh3.googleusercontent.com/baOtgb3xTS4fSp4r7l0ABw5JC3ePC91wdotvfy2OdlL73k8otEVPajE8RbGiVk8vS9HnX7RWUUMeMA=w1509-h415-no
 
 ### Sanity Check
 
