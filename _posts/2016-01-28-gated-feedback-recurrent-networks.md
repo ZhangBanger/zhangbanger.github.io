@@ -38,16 +38,16 @@ In very explicit Tensorflow code, we reuse symbolic variables `W`, `U`, and `b` 
 
 ```python
 with tf.variable_scope(scope or type(self).__name__):
-            x = inputs
-            h_t_1 = state
-            W = tf.get_variable("W", [self.input_size, self.state_size],
-                                initializer=tf.random_uniform_initializer(-0.1, 0.1))
-            U = tf.get_variable("U", [self.state_size, self.state_size],
-                                initializer=tf.random_uniform_initializer(-0.1, 0.1))
-            b = tf.get_variable("b", [self.state_size], tf.constant_initializer(0.0))
-            h_t = tf.tanh(tf.matmul(x, W) + tf.matmul(h_t_1, U) + b)
+    x = inputs
+    h_t_1 = state
+    W = tf.get_variable("W", [self.input_size, self.state_size],
+                        initializer=tf.random_uniform_initializer(-0.1, 0.1))
+    U = tf.get_variable("U", [self.state_size, self.state_size],
+                        initializer=tf.random_uniform_initializer(-0.1, 0.1))
+    b = tf.get_variable("b", [self.state_size], tf.constant_initializer(0.0))
+    h_t = tf.tanh(tf.matmul(x, W) + tf.matmul(h_t_1, U) + b)
 
-        return h_t, h_t
+return h_t, h_t
 ```
 
 The actual TF implementation further combines matrix operations for efficiency:
