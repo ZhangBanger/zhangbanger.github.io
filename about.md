@@ -22,7 +22,7 @@ Reinforcement Learning
 Deep Learning
 * A study of generalization and related mathematical properties in deep learning
 * A comparison of modern architectural techniques for image classification
-* A comparison of gating techniques for RNN models
+* An analysis of the effects of gating mechanisms for recurrent and feedforward networks
 * An application of recurrent convolutional networks to seizure prediction
 * An experiment using memory-augmented networks for natural language program generation
 * A workshop on word embeddings: Developing Intuition By Example
