@@ -40,7 +40,6 @@ Plan
 Execute
 * Build out reference implementation of full product stack: web, mobile, server, datastore
 * Modernize and scale data ingestion and processing pipeline
-* Implement distributed training with robust programming paradigms
 * Train neural network language models on large scale social data
 * Evaluate state-of-the-art, whole image cancer diagnosis techniques on novel dataset
 * Incorporate a knowledge graph into a hybrid language generation system
