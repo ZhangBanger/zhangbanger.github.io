@@ -15,17 +15,17 @@ Feb 2015 - Now
 : **Projects & Collaborations**
 
 Reinforcement Learning
-* Theoretical and empirical analysis of doubly robust policy optimization for contextual bandits
-* Integrating reinforcement learning agents with the Unity3D game engine
-* Comparing sample efficiency of direct policy optimization (gradient-based and evolutionary)
+* Theoretical and empirical analysis of policy evaluation for contextual bandits (in progress)
+* Comparing sample efficiency of direct policy optimization techniques for 2D learning environments (in progress)
+* Integrating high-performance state/action logging system for imitation learning with 3D multiplayer environment
 
 Deep Learning
-* A study of generalization and related mathematical properties in deep learning
+* A study of generalization and related mathematical properties in deep learning (in progress)
 * A comparison of modern architectural techniques for image classification
 * An analysis of the effects of gating mechanisms for recurrent and feedforward networks
 * An application of recurrent convolutional networks to seizure prediction
 * An experiment using memory-augmented networks for natural language program generation
-* A workshop on word embeddings: Developing Intuition By Example
+* A workshop on word embeddings: Developing Mathematical Intuition By Example
 
 Feb 2015 - Now
 : **R&D Consulting**
@@ -93,7 +93,7 @@ Business and conversational English for tech clients in Hungary.
 2006 - 2007
 : **Consultant**
 
-Data and operations management.
+Data processing and analytics.
 
 Tools
 ------------
