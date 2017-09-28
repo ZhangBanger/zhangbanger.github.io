@@ -1,2 +1,1 @@
-# zhangbanger.github.io
-Andy Zhang's Blog
+# Andy Zhang's Blog
