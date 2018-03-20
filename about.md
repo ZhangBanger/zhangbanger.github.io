@@ -11,7 +11,12 @@ Machine Learning Engineer with **(1)** *expertise implementing machine learning 
 
 Experience
 ------------
-Feb 2015 - Now
+Dec 2017 - Now
+: **Partner**; Quant collective
+quantcollective.com
+
+
+Feb 2015 - Dec 2017
 : **Projects & Collaborations**
 
 Reinforcement Learning
@@ -27,7 +32,7 @@ Deep Learning
 * An experiment using memory-augmented networks for natural language program generation
 * A workshop on word embeddings: Developing Mathematical Intuition By Example
 
-Feb 2015 - Now
+Feb 2015 - Dec 2017
 : **R&D Consulting**
 
 Helping companies formulate their business & technical problems. Assessing feasibility and applicability of different technical approaches. Developing and implementing full stack solutions.
