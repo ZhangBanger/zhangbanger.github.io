@@ -12,9 +12,9 @@ Machine Learning Engineer with **(1)** *expertise implementing machine learning 
 Experience
 ------------
 Dec 2017 - Now
-: **Partner**; Quant collective
-quantcollective.com
+: **Partner**; Quant Collective
 
+http://quantcollective.com
 
 Feb 2015 - Dec 2017
 : **Projects & Collaborations**
